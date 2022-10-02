@@ -1,2 +1,4 @@
+__pycache__/
 inittime.py
-config.ini
+__init__.py
+secret.txt
