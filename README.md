@@ -10,7 +10,7 @@ Install the required dependencies from `requirements.txt`
 pip install -r requirements.txt
 ```
 
-Fill in the values in config.txt with the necessary IDs and Token to run the bot.
+Fill in the values in config.ini with the necessary IDs and Token to run the bot.
 
 ## Contributing
 
