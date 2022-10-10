@@ -14,6 +14,8 @@ pip install -r requirements.txt
 
 Fill in the values in config.ini with the necessary IDs and Token to run the bot.
 
+Create a folder called `downloads` in the program's main directory
+
 ## Contributing
 
 Don't care mate lol
