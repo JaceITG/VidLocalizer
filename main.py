@@ -37,6 +37,7 @@ async def on_message(m):
     print("Regex ~~~~~~~~~~~~~~~~")
     await check_msg(m)
 
+#Download a video from the discord cdn link, return filepath
 async def download(link:str):
     fname = link.split("/")[-1]
 
@@ -56,19 +57,32 @@ async def download(link:str):
     with open(fpath, 'wb') as f:
         f.write(resp.content)
     
+    return fpath
 
 
 async def check_msg(m):
+    global config
+
     link_reg = re.compile(r'https://cdn.discordapp.com/attachments/[a-zA-Z0-9/.\-]*((.mp4)|(.mov)|(.webm))')
     res = link_reg.search(m.content)
     
     if not res:
         return None
 
-    await download(res.group())
+    vidpath = await download(res.group())
 
-
-
+    sent = None
+    if config['OPTIONS']['PostAsReply']:
+        #Reply to message
+        sent = await m.reply(file=discord.File(vidpath))
+    else:
+        #Send in channel
+        sent = await m.channel.send(file=discord.File(vidpath))
+    
+    if sent:
+        os.remove(vidpath)
+    else:
+        print(f"We never sent that vidpath {vidpath}! Idk man!")
 
 
 #return list of applicable channel objects in server
