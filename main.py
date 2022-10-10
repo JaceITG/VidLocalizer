@@ -67,7 +67,7 @@ async def download(link:str):
 async def check_msg(m):
     global config
 
-    link_reg = re.compile(r'https://cdn.discordapp.com/attachments/[a-zA-Z0-9/.\-]*((.mp4)|(.mov)|(.webm))')
+    link_reg = re.compile(r'https://(cdn|media).discordapp.com/attachments/[a-zA-Z0-9/.\-_]*((.mp4)|(.mov)|(.webm))')
     res = link_reg.search(m.content)
     
     if not res:
