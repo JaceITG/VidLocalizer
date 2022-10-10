@@ -25,16 +25,20 @@ async def on_ready():
 
     await sweep()
 
-#TEMP: investigate what linked video messages look like
+#Try to log the last sweeped time before quitting application
+@client.event
+async def on_disconnect():
+    print(f"Logging {datetime.utcnow().isoformat()} as last sweep")
+    print("Logging out....")
+    with open("log.txt", 'w') as f:
+        f.write(str(int(datetime.utcnow().timestamp())))
+
+#Handle messages which were sent while bot is active
 @client.event
 async def on_message(m):
-    print(m)
-    print(m.content)
-    print(len(m.attachments))
-    if len(m.attachments) > 0:
-        print(m.attachments[0])
+    if m.author == client.user or m.content == None:
+        return
 
-    print("Regex ~~~~~~~~~~~~~~~~")
     await check_msg(m)
 
 #Download a video from the discord cdn link, return filepath
@@ -115,6 +119,10 @@ async def get_channels(server):
 async def sweep():
     global config, last_sweep
 
+    print(f"Sweeping after {last_sweep.isoformat()}")
+
+    started_sweep = datetime.utcnow()
+
     #sweep in each server (converted to int ID)
     for server in [int(s) for s in config['IDS']['Server'].split(',')]:
         
@@ -125,14 +133,17 @@ async def sweep():
 
         #go through retreived channels for this server
         for c in channels:
-            
-            #scan this channel's history, starting at last sweep
-            
+
+            #scan this channel's history, starting at last sweep            
             async for m in c.history(limit=None, after=last_sweep):
                 await check_msg(m)
+    
+    #update the last channel history sweep
+    last_sweep = started_sweep
 
+    print("Closing connection...")
+    await client.close()
 
-        
 
 def main(useConfig=None):
     global config

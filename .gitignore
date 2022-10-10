@@ -2,3 +2,4 @@ __pycache__/
 inittime.py
 __init__.py
 secret.txt
+downloads/*
