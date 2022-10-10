@@ -4,6 +4,8 @@ Discord Video Localizer is a Discord Bot script designed to solve the issue of v
 
 ## Installation
 
+I have been running with Python 3.7.9, not sure if newer builds will be difficult bc of Discordpy breaking changes
+
 Install the required dependencies from `requirements.txt`
 
 ```bash
