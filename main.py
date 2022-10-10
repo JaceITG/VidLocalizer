@@ -1,9 +1,11 @@
 import discord
 from datetime import datetime
-import re
+import re, os, requests
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
+
+download_folder = os.path.abspath("./downloads")
 
 last_sweep = 0
 config = None
@@ -35,6 +37,27 @@ async def on_message(m):
     print("Regex ~~~~~~~~~~~~~~~~")
     await check_msg(m)
 
+async def download(link:str):
+    fname = link.split("/")[-1]
+
+    fpath = os.path.join(download_folder, fname)
+
+    #file with this name has already been downloaded; avoid overwrites
+    i = 1
+    if os.path.exists(fpath):
+        newpath = fpath[:-4] + f"({i})" + fpath[-4:]
+        while os.path.exists(newpath):
+            i+=1
+            newpath = fpath[:-4] + f"({i})" + fpath[-4:]
+        fpath = newpath 
+
+    print(f"Downloading {fname}")
+    resp = requests.get(link)
+    with open(fpath, 'wb') as f:
+        f.write(resp.content)
+    
+
+
 async def check_msg(m):
     link_reg = re.compile(r'https://cdn.discordapp.com/attachments/[a-zA-Z0-9/.\-]*((.mp4)|(.mov)|(.webm))')
     res = link_reg.search(m.content)
@@ -42,7 +65,7 @@ async def check_msg(m):
     if not res:
         return None
 
-    link = res.group()
+    await download(res.group())
 
 
 
